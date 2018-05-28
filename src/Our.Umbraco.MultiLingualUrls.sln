@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.MultiLingualUrls", "Our.Umbraco.MultiLingualUrls\Our.Umbraco.MultiLingualUrls.csproj", "{8B4D43BA-050C-4C24-8F77-95B0D8A856EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B4D43BA-050C-4C24-8F77-95B0D8A856EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B4D43BA-050C-4C24-8F77-95B0D8A856EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B4D43BA-050C-4C24-8F77-95B0D8A856EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B4D43BA-050C-4C24-8F77-95B0D8A856EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A83F8746-9C89-42F6-9034-41812DF4C41E}
+	EndGlobalSection
+EndGlobal
