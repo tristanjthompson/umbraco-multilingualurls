@@ -8,19 +8,17 @@ using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
 using Umbraco.Core.Configuration;
+using Our.Umbraco.MultiLingualUrls.Resolver;
 
 namespace Our.Umbraco.MultiLingualUrls.UrlProviders
 {
-	public class MultiLingualUrlProvider : DefaultUrlProvider
+	public class MultiLingualUrlProvider : DefaultUrlProvider, IUrlProvider
 	{
-		private readonly IConfig _config;
-		private readonly ICacheProvider _cache;
+		private readonly IConfig _config = ServiceResolver.GetService<IConfig>();
 
-		public MultiLingualUrlProvider(IConfig config = null, ICacheProvider cache = null)
+		public MultiLingualUrlProvider()
 			: base(UmbracoConfig.For.UmbracoSettings().RequestHandler)
 		{
-			_config = config;
-			_cache = cache ?? UmbracoContext.Current.Application.ApplicationCache.RequestCache;
 		}
 
 		public new string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode)
