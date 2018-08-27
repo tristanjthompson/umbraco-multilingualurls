@@ -70,10 +70,11 @@
     <Compile Include="ContentFinders\MultiLingualContentFinder.cs" />
     <Compile Include="Events\StartupUmbracoEvents.cs" />
     <Compile Include="Models\FindContentRequest.cs" />
-    <Compile Include="Models\RootNodeAndStartingSegment.cs" />
+    <Compile Include="Models\DomainInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolver\ServiceResolver.cs" />
     <Compile Include="Services\ContentFinderService.cs" />
+    <Compile Include="Services\MultiLingualUrlProviderService.cs" />
     <Compile Include="UrlProviders\MultiLingualUrlProvider.cs" />
     <Compile Include="Wrappers\IUmbracoWrapper.cs" />
     <Compile Include="Wrappers\UmbracoWrapper.cs" />

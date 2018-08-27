@@ -23,7 +23,7 @@ namespace Our.Umbraco.MultiLingualUrls.ContentFinders
 				HasDomain = contentRequest.HasDomain,
 				Domain = contentRequest.UmbracoDomain,
 				DomainUri = contentRequest.DomainUri,
-				CurrentUri = contentRequest.Uri,
+				Uri = contentRequest.Uri,
 				CultureName = contentRequest.Culture.Name
 			});
 

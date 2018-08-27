@@ -1,20 +1,18 @@
-﻿using Our.Umbraco.MultiLingualUrls.Config;
-using Our.Umbraco.Vorto.Extensions;
-using System;
-using System.Linq;
+﻿using System;
 using Umbraco.Core;
-using Umbraco.Core.Cache;
-using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
 using Umbraco.Core.Configuration;
 using Our.Umbraco.MultiLingualUrls.Resolver;
+using Our.Umbraco.MultiLingualUrls.Services;
+using Our.Umbraco.MultiLingualUrls.Wrappers;
 
 namespace Our.Umbraco.MultiLingualUrls.UrlProviders
 {
 	public class MultiLingualUrlProvider : DefaultUrlProvider, IUrlProvider
 	{
-		private readonly IConfig _config = ServiceResolver.GetService<IConfig>();
+		private readonly IUmbracoWrapper _umbracoWrapper = ServiceResolver.GetService<IUmbracoWrapper>();
+		private readonly MultiLingualUrlProviderService _multiLingualUrlProviderService = ServiceResolver.GetService<MultiLingualUrlProviderService>();
 
 		public MultiLingualUrlProvider()
 			: base(UmbracoConfig.For.UmbracoSettings().RequestHandler)
@@ -23,60 +21,15 @@ namespace Our.Umbraco.MultiLingualUrls.UrlProviders
 
 		public new string GetUrl(UmbracoContext umbracoContext, int id, Uri current, UrlProviderMode mode)
 		{
-			if (IsSiteRootNode(umbracoContext, id, out IPublishedContent content))
+			var node = _umbracoWrapper.TypedContent(id);	
+
+			if (_umbracoWrapper.IsRootNode(node))
 				return base.GetUrl(umbracoContext, id, current, mode);
 
-			return GetMultiLingualUrl(content, umbracoContext, current, mode);
-		}
+			var segment = _multiLingualUrlProviderService.NodeSegment(node);
 
-		private string GetMultiLingualUrl(IPublishedContent content, UmbracoContext umbracoContext, Uri current, UrlProviderMode mode)
-		{
-			string segment = string.Empty;
-			if (!_config.HomePageDocumentTypeAliases.Any(a => content.DocumentTypeAlias.InvariantEquals(a)))
-			{
-				if (HasVortoUrlAliasProperty(content, _config.VortoUrlAliasProperty))
-				{
-					segment = content.GetVortoValue<string>(_config.VortoUrlAliasProperty, fallbackCultureName: _config.FallbackCultureName);
-
-					if (string.IsNullOrWhiteSpace(segment))
-					{
-						segment = GetDefaultUrlSegment(content);
-					}
-					else
-					{
-						segment = segment.ToUrlSegment();
-					}
-				}
-				else
-				{
-					segment = GetDefaultUrlSegment(content);
-				}
-			}
-
-			return string.Concat(
-					ParentUrl(umbracoContext, content.Parent.Id, current, mode)
-					, segment
-				)
-				.EnsureEndsWith('/');
-		}
-
-		private bool IsSiteRootNode(UmbracoContext umbracoContext, int id, out IPublishedContent content)
-		{
-			// don't interfere with the root node url
-			content = umbracoContext.ContentCache.GetById(id);
-			return content.Parent == null;
-		}
-
-		private bool HasVortoUrlAliasProperty(IPublishedContent content, string alias)
-		{
-			return content.HasProperty(alias)
-				&& content.HasVortoValue(alias);
-		}
-
-		private string GetDefaultUrlSegment(IPublishedContent content)
-		{
-			return content.GetPropertyValue<string>(_config.DefaultUrlAliasProperty, content.Name)
-				.ToUrlSegment();
+			return ParentUrl(umbracoContext, node.Parent.Id, current, mode) 
+				+ segment.EnsureEndsWith('/');
 		}
 
 		private string ParentUrl(UmbracoContext umbracoContext, int parentId, Uri current, UrlProviderMode mode)

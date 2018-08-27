@@ -12,8 +12,6 @@ namespace Our.Umbraco.MultiLingualUrls.Config
 
 		public string VortoUrlAliasProperty => ConfigurationManager.AppSettings[ConfigPrefix + nameof(VortoUrlAliasProperty)] ?? "vortoUrlAlias";
 
-		public string DefaultUrlAliasProperty => ConfigurationManager.AppSettings[ConfigPrefix + nameof(DefaultUrlAliasProperty)] ?? "umbracoUrlAlias";
-
 		public string FallbackCultureName => ConfigurationManager.AppSettings[ConfigPrefix + nameof(FallbackCultureName)] ?? "en-GB";
 
 		private List<string> GetConfigStringListValue(string key)

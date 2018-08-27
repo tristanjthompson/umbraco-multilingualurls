@@ -16,13 +16,13 @@ namespace Our.Umbraco.MultiLingualUrls.Services
 
 		public IPublishedContent FindContent(FindContentRequest request)
 		{
-			var rootNodeAndStartingSegment = RootNodeAndStartingSegment(request.HasDomain, request.Domain, request.DomainUri);
+			var domainInfo = DomainInfo(request);
 
 			// iterate along the URL segments in tandem with the nodes, matching them to the segments
-			var currentItem = rootNodeAndStartingSegment.RootNode;
-			for (int i = rootNodeAndStartingSegment.StartingSegment; i < request.CurrentUri.Segments.Length; i++)
+			var currentItem = domainInfo.Node;
+			for (int i = domainInfo.SegmentCount; i < request.Uri.Segments.Length; i++)
 			{
-				var urlSegment = request.CurrentUri.Segments[i].TrimEnd('/');
+				var urlSegment = request.Uri.Segments[i].TrimEnd('/');
 				var segmentFound = false;
 				foreach (var node in  _umbracoWrapper.Children(currentItem))
 				{
@@ -43,51 +43,41 @@ namespace Our.Umbraco.MultiLingualUrls.Services
 			return currentItem;
 		}
 
-		public RootNodeAndStartingSegment RootNodeAndStartingSegment(bool hasDomain, IDomain domain, Uri domainUri)
+		public DomainInfo DomainInfo(FindContentRequest request)
+		{
+			return DomainInfo(request.HasDomain, request.Domain, request.DomainUri);
+		}
+
+		public DomainInfo DomainInfo(bool hasDomain, IDomain domain, Uri domainUri)
 		{
 			if (hasDomain && domain.RootContentId.HasValue)
 			{
-				return new RootNodeAndStartingSegment
+				return new DomainInfo
 				{
-					RootNode = _umbracoWrapper.TypedContent(domain.RootContentId.Value),
-					StartingSegment = domainUri.Segments.Count()
+					Node = _umbracoWrapper.TypedContent(domain.RootContentId.Value),
+					SegmentCount = domainUri.Segments.Count()
 				};
 			}
 			else
 			{
-				return new RootNodeAndStartingSegment
+				return new DomainInfo
 				{
-					RootNode = _umbracoWrapper.TypedContentAtRoot()?.FirstOrDefault(),
-					StartingSegment = 1
+					Node = _umbracoWrapper.TypedContentAtRoot()?.FirstOrDefault(),
+					SegmentCount = 1
 				};
 			}
 		}
 
 		public string NodeUrlSegment(IPublishedContent item, string cultureName)
 		{
-			var itemUrlSegment = MultiLingualUrlSegment(item, cultureName);
+			var itemUrlSegment = _umbracoWrapper.MultiLingualUrlSegment(item, cultureName);
 
 			if (string.IsNullOrEmpty(itemUrlSegment))
-				itemUrlSegment = DefaultUrlSegment(item);
-
-			return itemUrlSegment.ToUrlSegment();
-		}
-
-		public string MultiLingualUrlSegment(IPublishedContent item, string cultureName)
-		{
-			if (_umbracoWrapper.HasProperty(item, _config.VortoUrlAliasProperty))
 			{
-				return  _umbracoWrapper.GetVortoValue<string>(item, _config.VortoUrlAliasProperty, cultureName: cultureName);
+				itemUrlSegment = _umbracoWrapper.DefaultUrlSegment(item);
 			}
-			else
-			{
-				return string.Empty;
-			}
-		}
 
-		public string DefaultUrlSegment(IPublishedContent item)
-		{
-			return item.Name;
+			return itemUrlSegment;
 		}
 	}
 }

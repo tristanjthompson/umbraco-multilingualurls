@@ -22,15 +22,18 @@ namespace Our.Umbraco.MultiLingualUrls.Resolver
 			if(typeof(T) == typeof(IConfig))
 				return new Config.Config() as T;
 
-			if (typeof(T) == typeof(ContentFinderService))
-				return new ContentFinderService() as T;
-
 			if (typeof(T) == typeof(ICacheProvider))
 				return UmbracoContext.Current.Application.ApplicationCache.RequestCache as T;
 
 			if (typeof(T) == typeof(IUmbracoWrapper))
 				return new UmbracoWrapper() as T;
 
+			if (typeof(T) == typeof(ContentFinderService))
+				return new ContentFinderService() as T;
+
+			if (typeof(T) == typeof(MultiLingualUrlProviderService))
+				return new MultiLingualUrlProviderService() as T;
+			
 			return null;
 		}
 	}
